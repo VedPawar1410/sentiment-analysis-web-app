@@ -4,13 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sentiment Result</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Sentiment Prediction Result</h1>
-        <p>The predicted sentiment is: <strong>{{ prediction }}</strong></p>
-        <a href="/">Go back</a>
+    <div class="background-gradient"></div>
+    <div class="animated-bg">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
     </div>
+    
+    <div class="container result-container">
+        <div class="result-card">
+            <div class="result-icon-wrapper">
+                {% if prediction|lower == 'positive' %}
+                <div class="sentiment-icon positive">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                        <line x1="9" y1="9" x2="9.01" y2="9"/>
+                        <line x1="15" y1="9" x2="15.01" y2="9"/>
+                    </svg>
+                </div>
+                {% elif prediction|lower == 'negative' %}
+                <div class="sentiment-icon negative">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M16 16s-1.5-2-4-2-4 2-4 2"/>
+                        <line x1="9" y1="9" x2="9.01" y2="9"/>
+                        <line x1="15" y1="9" x2="15.01" y2="9"/>
+                    </svg>
+                </div>
+                {% else %}
+                <div class="sentiment-icon neutral">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="8" y1="15" x2="16" y2="15"/>
+                        <line x1="9" y1="9" x2="9.01" y2="9"/>
+                        <line x1="15" y1="9" x2="15.01" y2="9"/>
+                    </svg>
+                </div>
+                {% endif %}
+            </div>
+            
+            <h1 class="result-title">Analysis Complete</h1>
+            
+            <div class="prediction-badge {{ prediction|lower }}">
+                <span class="badge-label">Sentiment Detected</span>
+                <span class="badge-value">{{ prediction }}</span>
+            </div>
+            
+            <div class="result-description">
+                {% if prediction|lower == 'positive' %}
+                    The text expresses positive emotions, optimism, or satisfaction.
+                {% elif prediction|lower == 'negative' %}
+                    The text expresses negative emotions, dissatisfaction, or criticism.
+                {% else %}
+                    The text appears neutral without strong emotional indicators.
+                {% endif %}
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/" class="back-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    Analyze Another
+                </a>
+                
+                <button class="share-btn" onclick="shareResult()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"/>
+                        <circle cx="6" cy="12" r="3"/>
+                        <circle cx="18" cy="19" r="3"/>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                    Share
+                </button>
+            </div>
+        </div>
+        
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <span class="stat-label">Analysis Type</span>
+                    <span class="stat-value">AI-Powered</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-info">
+                    <span class="stat-label">Processing Time</span>
+                    <span class="stat-value">&lt; 1 second</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add entrance animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultCard = document.querySelector('.result-card');
+            resultCard.classList.add('animate-in');
+        });
+
+        // Share functionality
+        function shareResult() {
+            const prediction = "{{ prediction }}";
+            const text = `I just analyzed text sentiment and got: ${prediction}!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Sentiment Analysis Result',
+                    text: text,
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.querySelector('.share-btn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<span style="display: flex; align-items: center; gap: 8px;">✓ Copied!</span>';
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                    }, 2000);
+                });
+            }
+        }
+
+        // Mouse move effect
+        document.addEventListener('mousemove', (e) => {
+            const circles = document.querySelectorAll('.circle');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            circles.forEach((circle, index) => {
+                const speed = (index + 1) * 10;
+                circle.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+    </script>
 </body>
 </html>

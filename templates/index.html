@@ -7,15 +7,105 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Sentiment Analysis</h1>
-        <form action="/predict" method="POST">
-            <textarea name="user_input" placeholder="Enter your review"></textarea>
-            <button type="submit">Predict</button>
-            <!-- <label for="review">Enter text:</label> -->
-            <!-- <textarea id="review" name="review" placeholder="Enter your review..."></textarea> -->
-            <!-- <button type="submit">Predict Sentiment</button> -->
-        </form>
+    <div class="background-gradient"></div>
+    <div class="animated-bg">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
     </div>
+    
+    <div class="container">
+        <div class="header-section">
+            <div class="icon-wrapper">
+                <svg class="brain-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9.5 2A2.5 2.5 0 0 0 7 4.5v.5H5.5A2.5 2.5 0 0 0 3 7.5v.5a2.5 2.5 0 0 0 2 2.45V13a2.5 2.5 0 0 0 2.5 2.5h.5v.5a2.5 2.5 0 0 0 5 0v-.5h.5a2.5 2.5 0 0 0 2.5-2.5v-2.55a2.5 2.5 0 0 0 2-2.45v-.5A2.5 2.5 0 0 0 15.5 5H14v-.5A2.5 2.5 0 0 0 11.5 2h-2z"/>
+                </svg>
+            </div>
+            <h1 class="title">Sentiment Analysis</h1>
+            <p class="subtitle">Analyze the emotion behind your text with AI</p>
+        </div>
+        
+        <form action="/predict" method="POST" class="sentiment-form" id="sentimentForm">
+            <div class="input-wrapper">
+                <textarea 
+                    name="user_input" 
+                    id="userInput"
+                    placeholder="Share your thoughts, reviews, or any text..."
+                    required
+                    maxlength="5000"
+                ></textarea>
+                <div class="char-count">
+                    <span id="charCount">0</span> / 5000
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-text">Analyze Sentiment</span>
+                <span class="btn-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </button>
+        </form>
+        
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <span>Instant Results</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <span>High Accuracy</span>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🔒</div>
+                <span>Secure & Private</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('userInput');
+        const charCount = document.getElementById('charCount');
+        const form = document.getElementById('sentimentForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Character counter
+        textarea.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+            
+            if (count > 4500) {
+                charCount.style.color = '#ff6b6b';
+            } else {
+                charCount.style.color = '#a0a0a0';
+            }
+        });
+
+        // Auto-resize textarea
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Form submission animation
+        form.addEventListener('submit', function(e) {
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        });
+
+        // Add floating animation to circles on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const circles = document.querySelectorAll('.circle');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            circles.forEach((circle, index) => {
+                const speed = (index + 1) * 10;
+                circle.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+    </script>
 </body>
 </html>
