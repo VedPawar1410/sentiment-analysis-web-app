@@ -8,6 +8,9 @@ This repository contains a web application that performs sentiment analysis on t
 * Deployed with Flask, styled with HTML, CSS, and basic JavaScript.
 * Sentiment prediction is based on a pre-trained model using Scikit-learn.
 
+## Live Demo
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://veds-sentiment-analysis-app.onrender.com)
+
 ## Installation
 
 1.  Clone the repository:
