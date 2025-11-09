@@ -12,7 +12,7 @@ This repository contains a web application that performs sentiment analysis on t
 
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/VedPawar1410/sentiment-analysis-app.git](https://github.com/VedPawar1410/sentiment-analysis-app.git)
+    git clone https://github.com/VedPawar1410/sentiment-analysis-app.git
     ```
 2.  Navigate to the project directory:
     ```bash
