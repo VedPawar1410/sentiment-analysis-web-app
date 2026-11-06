@@ -1,35 +1,34 @@
-from flask import Flask, render_template, request
-import pickle
+"""Flask web app: a form that sends text to the trained sentiment pipeline.
+
+Local:      python app.py            (then open http://127.0.0.1:5000)
+Production: gunicorn app:app         (what Render runs)
+"""
+
+from flask import Flask, redirect, render_template, request, url_for
+
+from sentiment.predict import load_model, predict_sentiment
 
 app = Flask(__name__)
 
-# Load the model and vectorizer from the .pkl files
-with open('model1.pkl', 'rb') as model_file:
-    model = pickle.load(model_file)
+# Load the model once at startup, so the first visitor doesn't wait for it.
+load_model()
 
-with open('vectorizer1.pkl', 'rb') as vectorizer_file:
-    vectorizer = pickle.load(vectorizer_file)
 
-# Define a function to predict sentiment
-def predict_sentiment(text):
-    text_vector = vectorizer.transform([text])  # Vectorize the input text
-    prediction = model.predict(text_vector)[0]  # Predict using the trained model
-    # Sentiment140 labels: 0 = negative, 4 = positive (NOT 1)
-    return 'positive' if prediction == 4 else 'negative'
-
-# Define the route for the homepage
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-# Define the route to handle form submission and predict sentiment
-@app.route('/predict', methods=['POST'])
+
+@app.route("/predict", methods=["POST"])
 def predict():
-    # Get the input text from the form (from the textarea with name 'user_input')
-    user_input = request.form['user_input']  # Ensure the name matches the HTML form
-    result = predict_sentiment(user_input)   # Predict sentiment based on input
-    return render_template('result.html', prediction=result)
+    user_input = request.form.get("user_input", "").strip()
+    if not user_input:
+        return redirect(url_for("index"))
+    label, _ = predict_sentiment(user_input)  # 'positive', 'negative' or 'neutral'
+    return render_template("result.html", prediction=label)
 
-# Run the app
-#if __name__ == '__main__':
-    #app.run(debug=True)
+
+# Only runs with `python app.py`. gunicorn imports `app` and never executes this block,
+# so it's safe to keep for local development.
+if __name__ == "__main__":
+    app.run(debug=True)
