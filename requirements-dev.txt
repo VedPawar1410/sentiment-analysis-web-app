@@ -1,0 +1,5 @@
+# Everything needed to train, evaluate and test (the web app only needs requirements.txt)
+-r requirements.txt
+pandas
+matplotlib
+pytest
