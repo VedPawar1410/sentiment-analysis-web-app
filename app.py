@@ -13,8 +13,9 @@ with open('vectorizer1.pkl', 'rb') as vectorizer_file:
 # Define a function to predict sentiment
 def predict_sentiment(text):
     text_vector = vectorizer.transform([text])  # Vectorize the input text
-    prediction = model.predict(text_vector)     # Predict using the trained model
-    return 'positive' if prediction == 1 else 'negative'
+    prediction = model.predict(text_vector)[0]  # Predict using the trained model
+    # Sentiment140 labels: 0 = negative, 4 = positive (NOT 1)
+    return 'positive' if prediction == 4 else 'negative'
 
 # Define the route for the homepage
 @app.route('/')
